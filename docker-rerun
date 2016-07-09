@@ -1,0 +1,89 @@
+#!/usr/bin/python3
+
+import argparse
+import inspect
+import json
+import subprocess
+import sys
+
+
+def inspect_container(container):
+    output = subprocess.check_output(['docker', 'inspect', '--type=container', container])
+    return json.loads(output.decode('utf-8'))[0]
+
+
+def handle_binds(container, config):
+    if container['HostConfig']['Binds']:
+        config['args'].extend(['--volume=%s' % bind for bind in container['HostConfig']['Binds']])
+
+
+def handle_image(container, config):
+    config['image'] = container['Config']['Image']
+
+
+def handle_name(container, config):
+    # Trim the leading / off the name. They're equivalent from docker's point of view, but having
+    # the plain name looks nicer from a human point of view.
+    config['args'].append('--name=%s' % container['Name'][1:])
+
+
+def handle_network_mode(container, config):
+    network = container['HostConfig']['NetworkMode']
+    if network != 'default':
+        config['args'].append('--net=%s' % network) 
+
+
+def handle_ports(container, config):
+    ports = container['HostConfig']['PortBindings']
+    if ports:
+        for port, bindings in ports.items():
+            for binding in bindings:
+                if binding['HostIp']: 
+                    config['args'].append('-p=%s:%s:%s' % (binding['HostIp'], binding['HostPort'], port))
+                elif binding['HostPort']:
+                    config['args'].append('-p=%s:%s' % (binding['HostPort'], port))                
+                else:
+                    config['args'].append('-p=%s' % port)
+
+
+def handle_restart(container, config):
+    policy = container['HostConfig']['RestartPolicy']
+    if policy and policy['Name'] != 'no':
+        arg = '--restart=%s' % policy['Name']
+        if policy['MaximumRetryCount'] > 0:
+            arg += ':%s' % policy['MaximumRetryCount']
+        config['args'].append(arg)
+
+
+def handle_volumes_from(container, config):
+    if container['HostConfig']['VolumesFrom']:
+        config['args'].extend(['--volumes-from=%s' % cont for cont in container['HostConfig']['VolumesFrom']])
+
+
+def functions():
+    return [m for m in inspect.getmembers(sys.modules[__name__]) if inspect.isfunction(m[1])]
+
+
+def handlers():
+    return [func for (name, func) in functions() if name.startswith('handle_')]
+    
+
+def main():
+    parser = argparse.ArgumentParser(description='Reruns docker containers with different parameters.')
+    parser.add_argument('container', type=str, help='The container to rerun')
+    parser.add_argument('-d', '--dry-run', action='store_true', help='Don\'t actually re-run the container, just print what would happen.')
+    args = parser.parse_args()
+    container = inspect_container(args.container)
+
+    docker_config = {'args': ['-d'], 'image': ''}
+    for handler in handlers():
+        handler(container, docker_config)
+
+    if args.dry_run:
+        print('docker stop %s' %  args.container)
+        print('docker rm %s' % args.container)
+        print('docker run %s %s' % (' '.join(docker_config['args']), docker_config['image']))
+
+
+if __name__ == "__main__":
+    main()
