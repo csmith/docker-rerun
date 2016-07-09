@@ -79,10 +79,20 @@ def main():
     for handler in handlers():
         handler(container, docker_config)
 
+    commands = [
+        ['docker', 'stop', args.container],
+        ['docker', 'rm', args.container],
+        ['docker', 'run'] + docker_config['args'] + [docker_config['image']],
+    ]
+
     if args.dry_run:
-        print('docker stop %s' %  args.container)
-        print('docker rm %s' % args.container)
-        print('docker run %s %s' % (' '.join(docker_config['args']), docker_config['image']))
+        print('Performing dry run for container %s. The following would be executed:' % args.container)
+        for command in commands:
+            print(' '.join(command))
+    else:
+        print('Re-running container %s...' % args.container)
+        for command in commands:
+            subprocess.check_call(command)
 
 
 if __name__ == "__main__":
