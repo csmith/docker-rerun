@@ -1,4 +1,13 @@
 #!/usr/bin/python3
+"""Re-runs a docker container using the same arguments as before.
+
+Given the name of a container, the previous arguments are determined
+and reconstructed by looking at the `docker inspect` output.
+
+Each function named `handle_*` handles one configuration option,
+reading the relevant information from the inspect output and adding
+the relevant command line flags to the config.
+"""
 
 import argparse
 import inspect
@@ -8,34 +17,50 @@ import sys
 
 
 def inspect_container(container):
+    """Uses `docker inspect` to get details about the given container.
+
+    Args:
+        container (str): The name of the container to inspect.
+
+    Returns:
+        dict: Detailed information about the container.
+
+    Raises:
+        CalledProcessError: An error occurred talking to Docker.
+    """
     output = subprocess.check_output(['docker', 'inspect',
                                       '--type=container', container])
     return json.loads(output.decode('utf-8'))[0]
 
 
 def handle_binds(container, config):
+    """Copies the volume bind (--volume/-v) arguments."""
     if container['HostConfig']['Binds']:
         config['args'].extend(['--volume=%s' % bind
                                for bind in container['HostConfig']['Binds']])
 
 
 def handle_image(container, config):
+    """Copies the image argument."""
     config['image'] = container['Config']['Image']
 
 
 def handle_name(container, config):
+    """Copies the name (--name) argument."""
     # Trim the leading / off the name. They're equivalent from docker's point
     # of view, but having the plain name looks nicer from a human point of view.
     config['args'].append('--name=%s' % container['Name'][1:])
 
 
 def handle_network_mode(container, config):
+    """Copies the network mode (--net) argument."""
     network = container['HostConfig']['NetworkMode']
     if network != 'default':
         config['args'].append('--net=%s' % network)
 
 
 def handle_ports(container, config):
+    """Copies the port publication (-p) arguments."""
     ports = container['HostConfig']['PortBindings']
     if ports:
         for port, bindings in ports.items():
@@ -52,6 +77,7 @@ def handle_ports(container, config):
 
 
 def handle_restart(container, config):
+    """Copies the restart policy (--restart) argument."""
     policy = container['HostConfig']['RestartPolicy']
     if policy and policy['Name'] != 'no':
         arg = '--restart=%s' % policy['Name']
@@ -61,22 +87,35 @@ def handle_restart(container, config):
 
 
 def handle_volumes_from(container, config):
+    """Copies the volumes from (--volumes-from) argument."""
     if container['HostConfig']['VolumesFrom']:
         config['args'].extend(['--volumes-from=%s' % cont for
                                cont in container['HostConfig']['VolumesFrom']])
 
 
 def functions():
+    """Lists all functions defined in this module.
+
+    Returns:
+        list of (str,function): List of (name, function) pairs for each
+        function defined in this module.
+    """
     return [m for m
             in inspect.getmembers(sys.modules[__name__])
             if inspect.isfunction(m[1])]
 
 
 def handlers():
+    """Lists all handlers defined in this module.
+
+    Returns:
+        list of function: All handlers (handle_* funcs) defined in this module.
+    """
     return [func for (name, func) in functions() if name.startswith('handle_')]
 
 
 def main():
+    """Script entry point."""
     parser = argparse.ArgumentParser(description='Reruns docker containers ' \
                                                  'with different parameters.')
     parser.add_argument('container', type=str, help='The container to rerun')

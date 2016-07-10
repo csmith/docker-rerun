@@ -9,4 +9,4 @@ dependencies:
 
 test:
   override:
-    - pylint docker-rerun
+    - pylint -d invalid-name docker-rerun
