@@ -27,17 +27,18 @@ option:
 At present docker-rerun supports a small number of commonly used arguments:
 
     * Commands (trailing arguments)
+    * Environment variables (-e/--env)
     * Names (--name)
     * Networks (--net)
     * Port publications (-p)
     * Restart policies (--restart)
+    * User switching (-u/--user)
     * Volumes (-v/--volume, and --volumes-from)
 
 ## What's not done yet
 
 Many other command line arguments:
 
-    * Environment variables
     * Labels
     * Linking and aliases
     * Permissions and policies

@@ -110,6 +110,14 @@ def handle_command(container):
     container.cmd = container.if_image_diff(lambda c: c['Config']['Cmd'], [])
 
 
+def handle_environment(container):
+    """Copies the environment (-e/--env) arguments."""
+    container_env = container.info['Config']['Env'] or []
+    image_env = container.image_info['Config']['Env'] or []
+    delta = [e for e in container_env if e not in image_env]
+    container.args.extend(['--env=%s' % env for env in delta])
+
+
 def handle_image(container):
     """Copies the image argument."""
     container.image = container.info['Config']['Image']
