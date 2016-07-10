@@ -19,7 +19,7 @@ import sys
 class Container(object):
     """Encapsulates information about a container."""
 
-    def __init__(self, name, container_info, image_info):
+    def __init__(self, container_info, image_info):
         """Creates a new Container.
 
         Args:
@@ -27,7 +27,7 @@ class Container(object):
             container_info (dict): Dictionary describing the container state.
             image_info (dict): Dictionary describing the image state.
         """
-        self.args = ['--name=%s' % name]
+        self.args = ['-d']
         """The arguments passed to docker to create the container."""
 
         self.image = ''
@@ -78,64 +78,62 @@ def docker_inspect(target, what):
     return json.loads(output.decode('utf-8'))[0]
 
 
-def handle_binds(container, config):
+def handle_binds(container):
     """Copies the volume bind (--volume/-v) arguments."""
-    if container['HostConfig']['Binds']:
-        config['args'].extend(['--volume=%s' % bind
-                               for bind in container['HostConfig']['Binds']])
+    container.add_args_from_list('--volume=%s',
+                                 lambda c: c['HostConfig']['Binds'])
 
 
-def handle_image(container, config):
+def handle_image(container):
     """Copies the image argument."""
-    config['image'] = container['Config']['Image']
+    container.image = container.info['Config']['Image']
 
 
-def handle_name(container, config):
+def handle_name(container):
     """Copies the name (--name) argument."""
     # Trim the leading / off the name. They're equivalent from docker's point
     # of view, but having the plain name looks nicer from a human point of view.
-    config['args'].append('--name=%s' % container['Name'][1:])
+    container.args.append('--name=%s' % container.info['Name'][1:])
 
 
-def handle_network_mode(container, config):
+def handle_network_mode(container):
     """Copies the network mode (--net) argument."""
-    network = container['HostConfig']['NetworkMode']
+    network = container.info['HostConfig']['NetworkMode']
     if network != 'default':
-        config['args'].append('--net=%s' % network)
+        container.args.append('--net=%s' % network)
 
 
-def handle_ports(container, config):
+def handle_ports(container):
     """Copies the port publication (-p) arguments."""
-    ports = container['HostConfig']['PortBindings']
+    ports = container.info['HostConfig']['PortBindings']
     if ports:
         for port, bindings in ports.items():
             for binding in bindings:
                 if binding['HostIp']:
-                    config['args'].append('-p=%s:%s:%s' % (binding['HostIp'],
+                    container.args.append('-p=%s:%s:%s' % (binding['HostIp'],
                                                            binding['HostPort'],
                                                            port))
                 elif binding['HostPort']:
-                    config['args'].append('-p=%s:%s' % (binding['HostPort'],
+                    container.args.append('-p=%s:%s' % (binding['HostPort'],
                                                         port))
                 else:
-                    config['args'].append('-p=%s' % port)
+                    container.args.append('-p=%s' % port)
 
 
-def handle_restart(container, config):
+def handle_restart(container):
     """Copies the restart policy (--restart) argument."""
-    policy = container['HostConfig']['RestartPolicy']
+    policy = container.info['HostConfig']['RestartPolicy']
     if policy and policy['Name'] != 'no':
         arg = '--restart=%s' % policy['Name']
         if policy['MaximumRetryCount'] > 0:
             arg += ':%s' % policy['MaximumRetryCount']
-        config['args'].append(arg)
+        container.args.append(arg)
 
 
-def handle_volumes_from(container, config):
+def handle_volumes_from(container):
     """Copies the volumes from (--volumes-from) argument."""
-    if container['HostConfig']['VolumesFrom']:
-        config['args'].extend(['--volumes-from=%s' % cont for
-                               cont in container['HostConfig']['VolumesFrom']])
+    container.add_args_from_list('--volumes-from=%s',
+                                 lambda c: c['HostConfig']['VolumesFrom'])
 
 
 def functions():
@@ -168,17 +166,17 @@ def main():
                         help='Don\'t actually re-run the container, just ' \
                              'print what would happen.')
     args = parser.parse_args()
-    container = docker_inspect(args.container, 'container')
+    container_info = docker_inspect(args.container, 'container')
+    image_info = docker_inspect(container_info['Config']['Image'], 'image')
+    container = Container(container_info, image_info)
 
-    docker_config = {'args': ['-d'], 'image': ''}
     for handler in handlers():
-        handler(container, docker_config)
+        handler(container)
 
-    docker_config['args'].sort()
     commands = [
         ['docker', 'stop', args.container],
         ['docker', 'rm', args.container],
-        ['docker', 'run'] + docker_config['args'] + [docker_config['image']],
+        container.command_line(),
     ]
 
     if args.dry_run:
