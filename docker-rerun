@@ -123,6 +123,18 @@ def handle_image(container):
     container.image = container.info['Config']['Image']
 
 
+def handle_labels(container):
+    """Copies the label (-l/--label) arguments."""
+    container_labels = set((container.info['Config']['Labels'] or {}).items())
+    image_labels = set((container.image_info['Config']['Labels'] or {}).items())
+    delta = container_labels - image_labels
+    for key, value in delta:
+        if value:
+            container.args.append('--label=%s=%s' % (key, value))
+        else:
+            container.args.append('--label=%s' % key)
+
+
 def handle_name(container):
     """Copies the name (--name) argument."""
     # Trim the leading / off the name. They're equivalent from docker's point

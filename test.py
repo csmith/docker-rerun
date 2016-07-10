@@ -22,7 +22,10 @@ def _run(cmd):
     ['docker', 'run', '--name=test123', '-d', '-p=127.0.0.1:443:443/tcp', '-p=127.0.0.1::1336/tcp', 'hello-world'],
     ['docker', 'run', '--name=test123', '-d', '-p=443/tcp', 'hello-world'],
     ['docker', 'run', '--name=test123', '--user=root', '-d', 'hello-world', '/hello', 'foobar'],
+    ['docker', 'run', '--name=test123', '--net=host', '--user=root:root', '-d', 'hello-world'],
     ['docker', 'run', '--name=test123', '--volume=/dev/null:/null', '--volume=/dev/urandom:/mnt/random', '-d', 'hello-world'],
+    ['docker', 'run', '--label=com.example=123 456', '--name=test123', '-d', 'hello-world'],
+    ['docker', 'run', '--label=com.example.1', '--label=com.example.2=345', '--name=test123', '-d', 'hello-world'],
 ])
 def test_command_matches(*command):
     _run(['docker', 'rm', '-f', 'test123'])

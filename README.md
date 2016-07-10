@@ -7,7 +7,7 @@ containers using the same arguments you used previously.
 Want to update to a newer image, or add a missing port publication?
 docker-rerun's got you covered.
 
-## How to use
+## How to use it
 
 In the most basic usage, you pass in a container name and it will be
 stopped, deleted and recreated:
@@ -28,6 +28,7 @@ At present docker-rerun supports a small number of commonly used arguments:
 
     * Commands (trailing arguments)
     * Environment variables (-e/--env)
+    * Labels (-l/--label)
     * Names (--name)
     * Networks (--net)
     * Port publications (-p)
@@ -39,9 +40,9 @@ At present docker-rerun supports a small number of commonly used arguments:
 
 Many other command line arguments:
 
-    * Labels
     * Linking and aliases
     * Permissions and policies
+    * Advanced networking options
 
 Additional options to allow mutating the container config when rerunning.
 For example:
