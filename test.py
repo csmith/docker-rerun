@@ -14,10 +14,6 @@ class RerunTest(unittest.TestCase):
 
 
     def test_command_matches(self):
-        """
-        Tests that the command used to start a docker container exactly matches
-        that returned by ./docker-rerun --dry-run.
-        """
         commands = [
             'docker run --name=test123 -d hello-world',
             'docker run --name=test123 --restart=always -d hello-world',
@@ -37,6 +33,3 @@ class RerunTest(unittest.TestCase):
                 self.assertEqual(output[3], command)
                 self._run(['docker', 'rm', '-f', 'test123'])
 
-
-if __name__ == '__main__':
-    unittest.main()
