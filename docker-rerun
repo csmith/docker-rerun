@@ -16,20 +16,21 @@ import subprocess
 import sys
 
 
-def inspect_container(container):
-    """Uses `docker inspect` to get details about the given container.
+def docker_inspect(target, type):
+    """Uses `docker inspect` to get details about the given container or image.
 
     Args:
-        container (str): The name of the container to inspect.
+        target (str): The name of the container or image to inspect.
+        type (str): The type of object to inspect ('container' or 'image').
 
     Returns:
-        dict: Detailed information about the container.
+        dict: Detailed information about the  target.
 
     Raises:
         CalledProcessError: An error occurred talking to Docker.
     """
     output = subprocess.check_output(['docker', 'inspect',
-                                      '--type=container', container])
+                                      '--type=%s' % type, target])
     return json.loads(output.decode('utf-8'))[0]
 
 
@@ -123,7 +124,7 @@ def main():
                         help='Don\'t actually re-run the container, just ' \
                              'print what would happen.')
     args = parser.parse_args()
-    container = inspect_container(args.container)
+    container = docker_inspect(args.container, 'container')
 
     docker_config = {'args': ['-d'], 'image': ''}
     for handler in handlers():
