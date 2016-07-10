@@ -16,12 +16,56 @@ import subprocess
 import sys
 
 
-def docker_inspect(target, type):
+class Container(object):
+    """Encapsulates information about a container."""
+
+    def __init__(self, name, container_info, image_info):
+        """Creates a new Container.
+
+        Args:
+            name (str): The name of the container.
+            container_info (dict): Dictionary describing the container state.
+            image_info (dict): Dictionary describing the image state.
+        """
+        self.args = ['--name=%s' % name]
+        """The arguments passed to docker to create the container."""
+
+        self.image = ''
+        """The image that the container uses."""
+
+        self.cmd = []
+        """The command executed within the container."""
+
+        self.info = container_info
+        """The container information as returned by `docker inspect`"""
+
+        self.image_info = image_info
+        """The image information as returned by `docker inspect`"""
+
+
+    def command_line(self):
+        """Gets the full command-line used to run this container."""
+        return ['docker', 'run'] + sorted(self.args) + [self.image] + self.cmd
+
+
+    def add_args_from_list(self, template, selector):
+        """Adds an argument for each item in a list.
+
+        Args:
+            template (str): Template to use for the argument. Use %s for value.
+            selector (func): Function to extract the list from our info.
+        """
+        target = selector(self.info)
+        if target:
+            self.args.extend([template % entry for entry in target])
+
+
+def docker_inspect(target, what):
     """Uses `docker inspect` to get details about the given container or image.
 
     Args:
         target (str): The name of the container or image to inspect.
-        type (str): The type of object to inspect ('container' or 'image').
+        what (str): The type of object to inspect ('container' or 'image').
 
     Returns:
         dict: Detailed information about the  target.
@@ -30,7 +74,7 @@ def docker_inspect(target, type):
         CalledProcessError: An error occurred talking to Docker.
     """
     output = subprocess.check_output(['docker', 'inspect',
-                                      '--type=%s' % type, target])
+                                      '--type=%s' % what, target])
     return json.loads(output.decode('utf-8'))[0]
 
 
