@@ -129,6 +129,7 @@ def main():
     for handler in handlers():
         handler(container, docker_config)
 
+    docker_config['args'].sort()
     commands = [
         ['docker', 'stop', args.container],
         ['docker', 'rm', args.container],
