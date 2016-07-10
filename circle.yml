@@ -5,8 +5,10 @@ machine:
 
 dependencies:
   pre:
-    - pip install pylint
+    - pip install nose pylint
 
 test:
   override:
     - pylint -d invalid-name docker-rerun
+    - nosetests test.py
+
