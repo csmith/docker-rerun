@@ -112,9 +112,9 @@ def handle_command(container):
 
 def handle_environment(container):
     """Copies the environment (-e/--env) arguments."""
-    container_env = container.info['Config']['Env'] or []
-    image_env = container.image_info['Config']['Env'] or []
-    delta = [e for e in container_env if e not in image_env]
+    container_env = set(container.info['Config']['Env'] or [])
+    image_env = set(container.image_info['Config']['Env'] or [])
+    delta = container_env - image_env
     container.args.extend(['--env=%s' % env for env in delta])
 
 

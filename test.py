@@ -15,7 +15,7 @@ def _run(cmd):
     ['docker', 'run', '--name=test123', '-d', 'hello-world:latest'],
     ['docker', 'run', '--name=test123', '-d', 'hello-world', '/hello', 'world...'],
     ['docker', 'run', '--env=PATH=/root', '--env=Z=X', '--name=test123', '-d', 'hello-world'],
-    ['docker', 'run', '--env=FOO=bar baz', '--name=test1234', '-d', 'hello-world'],
+    ['docker', 'run', '--env=FOO=bar baz', '--name=test123', '-d', 'hello-world'],
     ['docker', 'run', '--name=test123', '--restart=always', '-d', 'hello-world'],
     ['docker', 'run', '--name=test123', '--restart=on-failure:10', '-d', 'hello-world'],
     ['docker', 'run', '--name=test123', '--net=host', '-d', 'hello-world'],
