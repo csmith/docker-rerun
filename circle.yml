@@ -6,6 +6,9 @@ machine:
     - docker
 
 test:
-  post:
+  pre:
+    - mkdir $CIRCLE_TEST_REPORTS/nosetests
+  override:
     - pylint -d invalid-name docker-rerun
+    - nosetests -v --with-xunit --xunit-file=$CIRCLE_TEST_REPORTS/nosetests/nosetests.xml
 
