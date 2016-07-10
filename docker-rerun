@@ -84,6 +84,15 @@ def handle_binds(container):
                                  lambda c: c['HostConfig']['Binds'])
 
 
+def handle_command(container):
+    """Copies the command (trailing arguments)."""
+    cont_cmd = container.info['Config']['Cmd']
+    image_cmd = container.image_info['Config']['Cmd']
+
+    if cont_cmd != image_cmd:
+        container.cmd = cont_cmd
+
+
 def handle_image(container):
     """Copies the image argument."""
     container.image = container.info['Config']['Image']
