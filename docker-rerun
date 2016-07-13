@@ -154,16 +154,18 @@ def handle_ports(container):
     ports = container.info['HostConfig']['PortBindings']
     if ports:
         for port, bindings in ports.items():
+            # /tcp is the default - no need to include it
+            port_name = port[:-4] if port.endswith('/tcp') else port
             for binding in bindings:
                 if binding['HostIp']:
                     container.args.append('-p=%s:%s:%s' % (binding['HostIp'],
                                                            binding['HostPort'],
-                                                           port))
+                                                           port_name))
                 elif binding['HostPort']:
                     container.args.append('-p=%s:%s' % (binding['HostPort'],
-                                                        port))
+                                                        port_name))
                 else:
-                    container.args.append('-p=%s' % port)
+                    container.args.append('-p=%s' % port_name)
 
 
 def handle_restart(container):
