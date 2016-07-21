@@ -1,4 +1,4 @@
-docker-rerun
+docker-rerun [![Build Status](https://semaphoreci.com/api/v1/csmith/docker-rerun/branches/master/badge.svg)](https://semaphoreci.com/csmith/docker-rerun)
 ===============================================================================
 
 `docker-rerun` is a small utility script that makes it easy to re-run docker
