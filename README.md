@@ -29,6 +29,7 @@ At present docker-rerun supports a small number of commonly used arguments:
     * Commands (trailing arguments)
     * Environment variables (-e/--env)
     * Labels (-l/--label)
+    * Links (--link)
     * Names (--name)
     * Networks (--net)
     * Port publications (-p)
@@ -40,7 +41,7 @@ At present docker-rerun supports a small number of commonly used arguments:
 
 Many other command line arguments:
 
-    * Linking and aliases
+    * Network aliases
     * Permissions and policies
     * Advanced networking options
 

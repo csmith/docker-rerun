@@ -135,6 +135,20 @@ def handle_labels(container):
             container.args.append('--label=%s' % key)
 
 
+def handle_links(container):
+    """Copies the link (--link) arguments."""
+    name = container.info['Name']
+    links = container.info['HostConfig']['Links'] or []
+    for link in links:
+        (target, alias) = link.split(':')
+        target = target[1:]
+        alias = alias[len(name) + 1:]
+        if alias == target:
+            container.args.append('--link=%s' % target)
+        else:
+            container.args.append('--link=%s:%s' % (target, alias))
+
+
 def handle_name(container):
     """Copies the name (--name) argument."""
     # Trim the leading / off the name. They're equivalent from docker's point
