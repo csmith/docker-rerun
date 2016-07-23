@@ -7,12 +7,17 @@ containers using the same arguments you used previously.
 Want to update to a newer image, or add a missing port publication?
 docker-rerun's got you covered.
 
-## How to use it
+## Usage
 
 In the most basic usage, you pass in a container name and it will be
 stopped, deleted and recreated:
 
     $ ./docker-rerun apache
+
+You can also pass additional arguments to modify aspects of the container
+when it's rerun. For example, to change the image:
+
+    $ ./docker-rerun --image nginx:latest webserver
 
 To check what exactly is going to be performed beforehand, use the --dry-run
 option:
@@ -24,7 +29,7 @@ option:
 
 ## What's supported
 
-At present docker-rerun supports a small number of commonly used arguments:
+At present docker-rerun supports copying a number of commonly used arguments:
 
     * Commands (trailing arguments)
     * Environment variables (-e/--env)
@@ -37,6 +42,16 @@ At present docker-rerun supports a small number of commonly used arguments:
     * User switching (-u/--user)
     * Volumes (-v/--volume, and --volumes-from)
 
+If a container uses an argument that's not supported yet, it will be silently
+dropped when rerunning.
+
+
+The following arguments can be used when executing `docker-rerun` to modify
+the resulting container:
+
+    * `--image <image>` - changes the image that will be used. You can specify
+      tags (`name:tag`) or digests (`name@digest`) as with `docker run`.
+
 ## What's not done yet
 
 Many other command line arguments:
@@ -45,10 +60,5 @@ Many other command line arguments:
     * Permissions and policies
     * Advanced networking options
 
-Additional options to allow mutating the container config when rerunning.
-For example:
-
-    $ ./docker-rerun --image nginx:1.11.1 nginx
-
-Should replace the previously used image with the one specified.
+More options to allow mutating the container config when rerunning.
 

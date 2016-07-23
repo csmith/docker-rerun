@@ -7,6 +7,11 @@ and reconstructed by looking at the `docker inspect` output.
 Each function named `handle_*` handles one configuration option,
 reading the relevant information from the inspect output and adding
 the relevant command line flags to the config.
+
+Each function named `modify_*` allows the user to modify the
+configuration in some manner. Modify functions are called twice:
+once with an ArgumentParser, and subsequently with the parsed
+arguments and the container object.
 """
 
 import argparse
@@ -205,6 +210,15 @@ def handle_volumes_from(container):
                                  lambda c: c['HostConfig']['VolumesFrom'])
 
 
+def modify_image(parser=None, args=None, container=None):
+    """Allows the image (name, version, etc) to be modified in one go."""
+    if parser:
+        parser.add_argument('--image',
+                            help='Image to use in place of the original')
+    elif args.image:
+        container.image = args.image
+
+
 def functions():
     """Lists all functions defined in this module.
 
@@ -226,6 +240,15 @@ def handlers():
     return [func for (name, func) in functions() if name.startswith('handle_')]
 
 
+def modifiers():
+    """Lists all modifiers defined in this module.
+
+    Returns:
+        list of function: All modifiers (modify_* funcs) in this module.
+    """
+    return [func for (name, func) in functions() if name.startswith('modify_')]
+
+
 def main():
     """Script entry point."""
     parser = argparse.ArgumentParser(description='Reruns docker containers ' \
@@ -234,6 +257,11 @@ def main():
     parser.add_argument('-d', '--dry-run', action='store_true',
                         help='Don\'t actually re-run the container, just ' \
                              'print what would happen.')
+
+    mods = modifiers()
+    for mod in mods:
+        mod(parser=parser)
+
     args = parser.parse_args()
     container_info = docker_inspect(args.container, 'container')
     image_info = docker_inspect(container_info['Config']['Image'], 'image')
@@ -241,6 +269,9 @@ def main():
 
     for handler in handlers():
         handler(container)
+
+    for mod in mods:
+        mod(args=args, container=container)
 
     commands = [
         ['docker', 'stop', args.container],

@@ -48,10 +48,23 @@ def test_command_matches():
     yield check, ['docker', 'run', '--link=testA:bar', '--link=testB', '--name=test123', '-d', 'hello-world']
 
 
+@with_setup(setup, teardown)
+def test_modifiers():
+    yield (check,
+           ['docker', 'run', '--name=test123', '-d', 'hello-world'],
+           ['--image', 'tutum/hello-world'],
+           ['docker', 'run', '--name=test123', '-d', 'tutum/hello-world'])
+    yield (check,
+           ['docker', 'run', '--name=test123', '-d', 'hello-world'],
+           ['--image', 'hello-world:latest'],
+           ['docker', 'run', '--name=test123', '-d', 'hello-world:latest'])
+
+
 @with_setup(setup_each, teardown_each)
-def check(command):
+def check(command, args=[], expected=None):
     _run(command)
-    output = subprocess.check_output(['./docker-rerun', '--dry-run', 'test123'])
+    output = subprocess.check_output(['./docker-rerun', '--dry-run', 'test123'] + args)
     output = output.decode('utf-8').strip().splitlines()
-    assert output[3] == ' '.join(command), 'Expected "%s" but got "%s"' % (' '.join(command), output[3])
+    expected = ' '.join(expected or command)
+    assert output[3] == expected, 'Expected "%s" but got "%s"' % (expected, output[3])
 
