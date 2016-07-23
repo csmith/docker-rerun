@@ -219,6 +219,15 @@ def modify_image(parser=None, args=None, container=None):
         container.image = args.image
 
 
+def modify_port_add(parser=None, args=None, container=None):
+   """Allows a additional ports to be exposed."""
+   if parser:
+       parser.add_argument('--port', '-p', action='append',
+                           help='Additional port to expose')
+   elif args.port:
+       container.args.extend(['-p=%s' % port for port in args.port])
+
+
 def functions():
     """Lists all functions defined in this module.
 

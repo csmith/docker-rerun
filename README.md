@@ -51,6 +51,8 @@ the resulting container:
 
  * `--image <image>` - changes the image that will be used. You can specify
    tags (`name:tag`) or digests (`name@digest`) as with `docker run`.
+ * `-p <port>` or `--port <port>` - expose additional ports. Same format
+   as `docker run`'s `-p` option.
 
 ## What's not done yet
 
