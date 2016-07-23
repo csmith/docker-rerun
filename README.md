@@ -31,16 +31,16 @@ option:
 
 At present docker-rerun supports copying a number of commonly used arguments:
 
-    * Commands (trailing arguments)
-    * Environment variables (-e/--env)
-    * Labels (-l/--label)
-    * Links (--link)
-    * Names (--name)
-    * Networks (--net)
-    * Port publications (-p)
-    * Restart policies (--restart)
-    * User switching (-u/--user)
-    * Volumes (-v/--volume, and --volumes-from)
+ * Commands (trailing arguments)
+ * Environment variables (-e/--env)
+ * Labels (-l/--label)
+ * Links (--link)
+ * Names (--name)
+ * Networks (--net)
+ * Port publications (-p)
+ * Restart policies (--restart)
+ * User switching (-u/--user)
+ * Volumes (-v/--volume, and --volumes-from)
 
 If a container uses an argument that's not supported yet, it will be silently
 dropped when rerunning.
@@ -49,16 +49,16 @@ dropped when rerunning.
 The following arguments can be used when executing `docker-rerun` to modify
 the resulting container:
 
-    * `--image <image>` - changes the image that will be used. You can specify
-      tags (`name:tag`) or digests (`name@digest`) as with `docker run`.
+ * `--image <image>` - changes the image that will be used. You can specify
+   tags (`name:tag`) or digests (`name@digest`) as with `docker run`.
 
 ## What's not done yet
 
 Many other command line arguments:
 
-    * Network aliases
-    * Permissions and policies
-    * Advanced networking options
+ * Network aliases
+ * Permissions and policies
+ * Advanced networking options
 
 More options to allow mutating the container config when rerunning.
 
