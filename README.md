@@ -45,14 +45,26 @@ At present docker-rerun supports copying a number of commonly used arguments:
 If a container uses an argument that's not supported yet, it will be silently
 dropped when rerunning.
 
+## Arguments
 
-The following arguments can be used when executing `docker-rerun` to modify
-the resulting container:
+The built-in help shows all available arguments. `--dry-run` and `--pull`
+affect the behaviour of `docker-rerun`; other options allow modification
+of the container's parameters.
 
- * `--image <image>` - changes the image that will be used. You can specify
-   tags (`name:tag`) or digests (`name@digest`) as with `docker run`.
- * `-p <port>` or `--port <port>` - expose additional ports. Same format
-   as `docker run`'s `-p` option.
+    usage: docker-rerun [-h] [-d] [--pull] [--image IMAGE] [--port PORT] container
+    
+    Reruns docker containers with different parameters.
+    
+    positional arguments:
+      container             The container to rerun
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -d, --dry-run         Don't actually re-run the container, just print what
+                            would happen.
+      --pull                Docker pull the image before re-running the container
+      --image IMAGE         Image to use in place of the original
+      --port PORT, -p PORT  Additional port to expose
 
 ## What's not done yet
 

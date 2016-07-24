@@ -266,6 +266,9 @@ def main():
     parser.add_argument('-d', '--dry-run', action='store_true',
                         help='Don\'t actually re-run the container, just ' \
                              'print what would happen.')
+    parser.add_argument('--pull', action='store_true',
+                        help='Docker pull the image before re-running the ' \
+                             'container')
 
     mods = modifiers()
     for mod in mods:
@@ -287,6 +290,9 @@ def main():
         ['docker', 'rm', args.container],
         container.command_line(),
     ]
+
+    if args.pull:
+        commands = [['docker', 'pull', container.image]] + commands
 
     if args.dry_run:
         print('Performing dry run for container %s. The following would be ' \
