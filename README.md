@@ -29,7 +29,7 @@ option:
 
 ## Demo
 
-[![asciicast](https://asciinema.org/a/80782.png)](https://asciinema.org/a/80782?speed=2)
+[![asciicast](https://asciinema.org/a/80782.png)](https://asciinema.org/a/80782?speed=2.5&autoplay=1)
 
 ## What's supported
 
