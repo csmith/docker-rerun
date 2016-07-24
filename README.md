@@ -65,6 +65,7 @@ of the container's parameters.
       --pull                Docker pull the image before re-running the container
       --image IMAGE         Image to use in place of the original
       --port PORT, -p PORT  Additional port to expose
+      --tag TAG             Image tag (version) to use
 
 ## What's not done yet
 

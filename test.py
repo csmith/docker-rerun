@@ -66,6 +66,10 @@ def test_modifiers():
            ['docker', 'run', '--name=test123', '-d', 'hello-world'],
            ['--port', '123:456', '-p', '80'],
            ['docker', 'run', '--name=test123', '-d', '-p=123:456', '-p=80', 'hello-world'])
+    yield (check,
+           ['docker', 'run', '--name=test123', '-d', 'hello-world'],
+           ['--tag', 'latest'],
+           ['docker', 'run', '--name=test123', '-d', 'hello-world:latest'])
 
 
 @with_setup(setup_each, teardown_each)

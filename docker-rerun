@@ -228,6 +228,18 @@ def modify_port_add(parser=None, args=None, container=None):
         container.args.extend(['-p=%s' % port for port in args.port])
 
 
+def modify_tag(parser=None, args=None, container=None):
+    """Allows the tag (version) to be updated."""
+    if parser:
+        parser.add_argument('--tag',
+                            help='Image tag (version) to use')
+    elif args.tag:
+        # Get rid of any existing digest or tag
+        image = container.image.replace('@', ':')
+        image = image.split(':')[0]
+        container.image = '%s:%s' % (image, args.tag)
+
+
 def functions():
     """Lists all functions defined in this module.
 
