@@ -27,6 +27,10 @@ option:
     docker rm apache
     docker run --name=apache -p=80:80/tcp --restart=always apache:latest
 
+## Demo
+
+[![asciicast](https://asciinema.org/a/80782.png)](https://asciinema.org/a/80782?speed=2)
+
 ## What's supported
 
 At present docker-rerun supports copying a number of commonly used arguments:
