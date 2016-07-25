@@ -1,0 +1,8 @@
+[run]
+branch = True
+include = docker_rerun.py
+
+[report]
+precision = 2
+show_missing = True
+

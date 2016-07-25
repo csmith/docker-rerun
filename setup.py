@@ -49,8 +49,8 @@ setup(
     test_suite='nose.collector',
 
     extras_require={
-        'dev': [],
-        'test': ['coverage', 'nose', 'pylint'],
+        'dev': ['pylint'],
+        'test': ['coverage', 'nose', 'python-coveralls'],
     },
 
     entry_points={
