@@ -1,5 +1,10 @@
-docker-rerun [![Build Status](https://semaphoreci.com/api/v1/csmith/docker-rerun/branches/master/badge.svg)](https://semaphoreci.com/csmith/docker-rerun)
+docker-rerun
 ===============================================================================
+
+[![Build Status](https://semaphoreci.com/api/v1/csmith/docker-rerun/branches/master/shields_badge.svg)](https://semaphoreci.com/csmith/docker-rerun)
+[![Code Coverage](https://coveralls.io/repos/github/csmith/docker-rerun/badge.svg)](https://coveralls.io/github/csmith/docker-rerun)
+[![PyPI](https://img.shields.io/pypi/v/docker-rerun.svg?maxAge=2592000)](https://pypi.python.org/pypi/docker-rerun)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/docker-rerun.svg)](https://pypi.python.org/pypi/docker-rerun)
 
 `docker-rerun` is a small utility script that makes it easy to re-run docker
 containers using the same arguments you used previously.
