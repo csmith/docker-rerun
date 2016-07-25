@@ -12,22 +12,28 @@ containers using the same arguments you used previously.
 Want to update to a newer image, or add a missing port publication?
 docker-rerun's got you covered.
 
+## Installation
+
+You can install the latest version of docker-rerun using pip:
+
+    $ pip install docker-rerun
+
 ## Usage
 
 In the most basic usage, you pass in a container name and it will be
 stopped, deleted and recreated:
 
-    $ ./docker-rerun apache
+    $ docker-rerun apache
 
 You can also pass additional arguments to modify aspects of the container
 when it's rerun. For example, to change the image:
 
-    $ ./docker-rerun --image nginx:latest webserver
+    $ docker-rerun --image nginx:latest webserver
 
 To check what exactly is going to be performed beforehand, use the --dry-run
 option:
 
-    $ ./docker-rerun --dry-run apache
+    $ docker-rerun --dry-run apache
     docker stop apache
     docker rm apache
     docker run --name=apache -p=80:80/tcp --restart=always apache:latest
