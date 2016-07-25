@@ -42,6 +42,7 @@ def test_command_matches():
     yield check, ['docker', 'run', '--name=test123', '--net=host', '-d', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '-d', '-p=127.0.0.1:443:443', '-p=127.0.0.1::1336/udp', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '-d', '-p=443', 'hello-world']
+    yield check, ['docker', 'run', '--name=test123', '-d', '-p=80:80', '-p=90', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '--user=root', '-d', 'hello-world', '/hello', 'foobar']
     yield check, ['docker', 'run', '--name=test123', '--net=host', '--user=root:root', '-d', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '--volume=/dev/null:/null', '--volume=/dev/urandom:/mnt/random', '-d', 'hello-world']
