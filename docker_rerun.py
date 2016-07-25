@@ -317,5 +317,9 @@ def main(argv, out):
             subprocess.check_call(command)
 
 
-if __name__ == "__main__":
+def entrypoint():
+    """Entrypoint for script use."""
     main(sys.argv[1:], sys.stdout)
+
+if __name__ == "__main__":
+    entrypoint()

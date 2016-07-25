@@ -55,7 +55,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'docker-rerun=docker_rerun:main',
+            'docker-rerun=docker_rerun:entrypoint',
         ],
     },
 )
