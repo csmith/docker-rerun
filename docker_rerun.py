@@ -270,7 +270,7 @@ def modifiers():
     return [func for (name, func) in functions() if name.startswith('modify_')]
 
 
-def main():
+def main(argv, out):
     """Script entry point."""
     parser = argparse.ArgumentParser(description='Reruns docker containers ' \
                                                  'with different parameters.')
@@ -286,7 +286,7 @@ def main():
     for mod in mods:
         mod(parser=parser)
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     container_info = docker_inspect(args.container, 'container')
     image_info = docker_inspect(container_info['Config']['Image'], 'image')
     container = Container(container_info, image_info)
@@ -308,14 +308,14 @@ def main():
 
     if args.dry_run:
         print('Performing dry run for container %s. The following would be ' \
-              'executed:' % args.container)
+              'executed:' % args.container, file=out)
         for command in commands:
-            print(' '.join(command))
+            print(' '.join(command), file=out)
     else:
-        print('Re-running container %s...' % args.container)
+        print('Re-running container %s...' % args.container, file=out)
         for command in commands:
             subprocess.check_call(command)
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:], sys.stdout)
