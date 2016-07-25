@@ -75,7 +75,7 @@ def test_modifiers():
 @with_setup(setup_each, teardown_each)
 def check(command, args=[], expected=None):
     _run(command)
-    output = subprocess.check_output(['./docker-rerun', '--dry-run', 'test123'] + args)
+    output = subprocess.check_output(['./docker_rerun.py', '--dry-run', 'test123'] + args)
     output = output.decode('utf-8').strip().splitlines()
     expected = ' '.join(expected or command)
     assert output[3] == expected, 'Expected "%s" but got "%s"' % (expected, output[3])
