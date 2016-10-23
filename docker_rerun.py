@@ -165,7 +165,7 @@ def handle_network_mode(container):
     """Copies the network mode (--net) argument."""
     network = container.info['HostConfig']['NetworkMode']
     if network != 'default':
-        container.args.append('--net=%s' % network)
+        container.args.append('--network=%s' % network)
 
 
 def handle_ports(container):
@@ -217,6 +217,18 @@ def modify_image(parser=None, args=None, container=None):
                             help='Image to use in place of the original')
     elif args.image:
         container.image = args.image
+
+
+def modify_network(parser=None, args=None, container=None):
+    """Allows the network to be modified."""
+    if parser:
+        parser.add_argument('--network',
+                            help='The new network configuration to use')
+    elif args.network:
+        # Get rid of any existing network options, and add the new one
+        container.args = [a for a in container.args
+                          if not a.startswith('--network=')]
+        container.args.extend(['--network=%s' % args.network])
 
 
 def modify_port_add(parser=None, args=None, container=None):

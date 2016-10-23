@@ -39,12 +39,12 @@ def test_command_matches():
     yield check, ['docker', 'run', '--env=FOO=bar baz', '--name=test123', '-d', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '--restart=always', '-d', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '--restart=on-failure:10', '-d', 'hello-world']
-    yield check, ['docker', 'run', '--name=test123', '--net=host', '-d', 'hello-world']
+    yield check, ['docker', 'run', '--name=test123', '--network=host', '-d', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '-d', '-p=127.0.0.1:443:443', '-p=127.0.0.1::1336/udp', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '-d', '-p=443', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '-d', '-p=80:80', '-p=90', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '--user=root', '-d', 'hello-world', '/hello', 'foobar']
-    yield check, ['docker', 'run', '--name=test123', '--net=host', '--user=root:root', '-d', 'hello-world']
+    yield check, ['docker', 'run', '--name=test123', '--network=host', '--user=root:root', '-d', 'hello-world']
     yield check, ['docker', 'run', '--name=test123', '--volume=/dev/null:/null', '--volume=/dev/urandom:/mnt/random', '-d', 'hello-world']
     yield check, ['docker', 'run', '--label=com.example=123 456', '--name=test123', '-d', 'hello-world']
     yield check, ['docker', 'run', '--label=com.example.1', '--label=com.example.2=345', '--name=test123', '-d', 'hello-world']
@@ -73,6 +73,14 @@ def test_modifiers():
            ['docker', 'run', '--name=test123', '-d', 'hello-world'],
            ['--tag', 'latest'],
            ['docker', 'run', '--name=test123', '-d', 'hello-world:latest'])
+    yield (check,
+           ['docker', 'run', '--name=test123', '-d', 'hello-world'],
+           ['--network', 'none'],
+           ['docker', 'run', '--name=test123', '--network=none', '-d', 'hello-world'])
+    yield (check,
+           ['docker', 'run', '--name=test123', '--network=host', '-d', 'hello-world'],
+           ['--network', 'none'],
+           ['docker', 'run', '--name=test123', '--network=none', '-d', 'hello-world'])
 
 
 @with_setup(setup_each, teardown_each)

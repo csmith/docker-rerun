@@ -51,7 +51,7 @@ At present docker-rerun supports copying a number of commonly used arguments:
  * Labels (-l/--label)
  * Links (--link)
  * Names (--name)
- * Networks (--net)
+ * Networks (--network)
  * Port publications (-p)
  * Restart policies (--restart)
  * User switching (-u/--user)
@@ -79,6 +79,7 @@ of the container's parameters.
                             would happen.
       --pull                Docker pull the image before re-running the container
       --image IMAGE         Image to use in place of the original
+      --network NETWORK     The new network configuration to use
       --port PORT, -p PORT  Additional port to expose
       --tag TAG             Image tag (version) to use
 
