@@ -225,7 +225,7 @@ def modify_labels(parser=None, args=None, container=None):
         parser.add_argument('--label', '-l', action='append',
                             help='The new label to add to the container.')
     elif args.label:
-        container.args.extend(['--label %s' % label for label in args.label])
+        container.args.extend(['--label=%s' % label for label in args.label])
 
 
 def modify_network(parser=None, args=None, container=None):

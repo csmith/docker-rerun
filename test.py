@@ -90,9 +90,9 @@ def test_modifiers():
            ['--label', 'test2'],
            ['docker', 'run', '--label=test', '--label=test2', '--name=test123', '-d', 'hello-world'])
     yield (check,
-           ['docker', 'run', '--label test=1', '--name=test123', '-d', 'hello-world'],
+           ['docker', 'run', '--label=test=1', '--name=test123', '-d', 'hello-world'],
            ['--label', 'test=2'],
-           ['docker', 'run', '--label test=2', '--name=test123', '-d', 'hello-world'])
+           ['docker', 'run', '--label=test=2', '--name=test123', '-d', 'hello-world'])
 
 
 @with_setup(setup_each, teardown_each)
