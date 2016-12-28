@@ -81,6 +81,18 @@ def test_modifiers():
            ['docker', 'run', '--name=test123', '--network=host', '-d', 'hello-world'],
            ['--network', 'none'],
            ['docker', 'run', '--name=test123', '--network=none', '-d', 'hello-world'])
+    yield (check,
+           ['docker', 'run', '--name=test123', '-d', 'hello-world'],
+           ['--label', 'testLabel'],
+           ['docker', 'run', '--label=testLabel', '--name=test123', '-d', 'hello-world'])
+    yield (check,
+           ['docker', 'run', '--label=test', '--name=test123', '-d', 'hello-world'],
+           ['--label', 'test2'],
+           ['docker', 'run', '--label=test', '--label=test2', '--name=test123', '-d', 'hello-world'])
+    yield (check,
+           ['docker', 'run', '--label test=1', '--name=test123', '-d', 'hello-world'],
+           ['--label', 'test=2'],
+           ['docker', 'run', '--label test=2', '--name=test123', '-d', 'hello-world'])
 
 
 @with_setup(setup_each, teardown_each)

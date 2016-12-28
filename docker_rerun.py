@@ -219,6 +219,15 @@ def modify_image(parser=None, args=None, container=None):
         container.image = args.image
 
 
+def modify_labels(parser=None, args=None, container=None):
+    """Allows labels on the container to be modified."""
+    if parser:
+        parser.add_argument('--label', '-l', action='append',
+                            help='The new label to add to the container.')
+    elif args.label:
+        container.args.extend(['--label %s' % label for label in args.label])
+
+
 def modify_network(parser=None, args=None, container=None):
     """Allows the network to be modified."""
     if parser:
