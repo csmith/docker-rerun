@@ -225,8 +225,10 @@ def modify_labels(parser=None, args=None, container=None):
         for label in args.label:
             # Remove any existing label with the same key
             prefix = label.split('=')[0]
-            container.args = [arg for arg in container.args if not arg.startswith('--label=%s=' % prefix)
-                              and not arg == '--label=%s' % prefix] + ['--label=%s' % label]
+            container.args = [arg for arg in container.args if
+                              not arg.startswith('--label=%s=' % prefix) and
+                              not arg == '--label=%s' % prefix]
+            container.args.append('--label=%s' % label)
 
 
 def modify_network(parser=None, args=None, container=None):
