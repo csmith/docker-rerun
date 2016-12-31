@@ -47,11 +47,9 @@ class Container(object):
         self.image_info = image_info
         """The image information as returned by `docker inspect`"""
 
-
     def command_line(self):
         """Gets the full command-line used to run this container."""
         return ['docker', 'run'] + sorted(self.args) + [self.image] + self.cmd
-
 
     def add_args_from_list(self, template, selector):
         """Adds an argument for each item in a list.
@@ -63,7 +61,6 @@ class Container(object):
         target = selector(self.info)
         if target:
             self.args.extend([template % entry for entry in target])
-
 
     def if_image_diff(self, selector, fallback):
         """Gets a property if it's different from the image's config.
@@ -225,7 +222,11 @@ def modify_labels(parser=None, args=None, container=None):
         parser.add_argument('--label', '-l', action='append',
                             help='The new label to add to the container.')
     elif args.label:
-        container.args.extend(['--label=%s' % label for label in args.label])
+        for label in args.label:
+            # Remove any existing label with the same key
+            prefix = label.split('=')[0]
+            container.args = [arg for arg in container.args if not arg.startswith('--label=%s=' % prefix)
+                              and not arg == '--label=%s' % prefix] + ['--label=%s' % label]
 
 
 def modify_network(parser=None, args=None, container=None):
@@ -341,6 +342,7 @@ def main(argv, out):
 def entrypoint():
     """Entrypoint for script use."""
     main(sys.argv[1:], sys.stdout)
+
 
 if __name__ == "__main__":
     entrypoint()
