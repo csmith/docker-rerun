@@ -14,9 +14,16 @@ docker-rerun's got you covered.
 
 ## Installation
 
-You can install the latest version of docker-rerun using pip:
+You can install the current stable version of docker-rerun using pip:
 
-    $ pip install docker-rerun
+    $ pip install --upgrade docker-rerun
+
+Or the bleeding edge version from git:
+
+    $ pip install --upgrade git+https://github.com/csmith/docker-rerun.git
+
+Note that `docker-rerun` requires Python 3, so you may need to use `pip3` in
+place of `pip` depending on your system configuration.
 
 ## Usage
 
@@ -66,7 +73,9 @@ The built-in help shows all available arguments. `--dry-run` and `--pull`
 affect the behaviour of `docker-rerun`; other options allow modification
 of the container's parameters.
 
-    usage: docker-rerun [-h] [-d] [--pull] [--image IMAGE] [--port PORT] container
+    usage: docker-rerun [-h] [-d] [--pull] [--image IMAGE] [--label LABEL]
+                        [--network NETWORK] [--port PORT] [--tag TAG]
+                        container
     
     Reruns docker containers with different parameters.
     
@@ -79,6 +88,8 @@ of the container's parameters.
                             would happen.
       --pull                Docker pull the image before re-running the container
       --image IMAGE         Image to use in place of the original
+      --label LABEL, -l LABEL
+                            The new label to add to the container.
       --network NETWORK     The new network configuration to use
       --port PORT, -p PORT  Additional port to expose
       --tag TAG             Image tag (version) to use
